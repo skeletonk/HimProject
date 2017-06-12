@@ -1,3 +1,6 @@
+//TODO : 밝기 조절 함수 통합
+
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -21,6 +24,11 @@
 #define DRIVER_AUTHOR 	"YOON"
 #define DRIVER_DESC 	"sample driver"
 
+
+
+#define ARGS	20000
+#define STEP_D	1
+#define MAX_LEVEL 	(((((STEP_D))*100)-1))
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR(DRIVER_DESC);
 MODULE_DESCRIPTION(DRIVER_DESC);
@@ -55,10 +63,10 @@ static int light_open(struct inode *inode,struct file *filp);
 static int light_release(struct inode *inode,struct file *filp);
 static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg);
 static void light_set(int duty_ns,int period_ns);
-
+static int light_level=0;
 
 static void light_brightness(int level);
-static void light_brighten(void);
+static void light_brighten(int flag,int set);
 static void light_obumbrate(void);
 static void light_off(void);
 
@@ -72,11 +80,16 @@ struct file_operations light_fops = {
 };
 
 
-static void light_brighten(void)
+static void light_brighten(int flag,int set)
 {
 	int level;
-	for(level=1;level<21;level++)
+	for(level=light_level;level<MAX_LEVEL-(flag*((MAX_LEVEL-1)-set));level++)
 	{
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
 		udelay(800);
 		light_brightness(level);
 		
@@ -88,65 +101,20 @@ static void light_brighten(void)
 		udelay(800);
 		udelay(800);
 		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
+		printk("level %d\n",level);
 	}
+	light_level=level;
 }
 static void light_obumbrate(void)
 {
 	int level;
-	for(level=20;level>0;level--)
+	for(level=light_level;level>0;level--)
 	{
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
 		udelay(800);
 		light_brightness(level);
 		
@@ -158,72 +126,25 @@ static void light_obumbrate(void)
 		udelay(800);
 		udelay(800);
 		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
+		printk("level %d\n",level);
 	}
+	light_level=level;
 }
 static void light_off(void)
 {
 	pwm_disable(light_pwm);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
 	gpio_set_value(S3C2410_GPB(3),1);
-
+	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
+	light_level=0;
+	printk("level %d\n",light_level);
 }
 
 
 static void light_brightness(int level)
 {	
 	pwm_disable(light_pwm);
+	/*
 	switch(level)
 	{
 		case 0:
@@ -310,13 +231,28 @@ static void light_brightness(int level)
 			light_config.duty_ns=10;
 			light_config.period_ns=20000;
 			break;
-	}
+	}*/
+	if(level*STEP_D>100) level=100/(STEP_D+1);
+	
+		
+	
+	if(level==0){
+			light_config.duty_ns=ARGS-10;
+			light_config.period_ns=ARGS;
+		}else if(level==(100/(STEP_D+1))){
+			light_config.duty_ns=10;
+			light_config.period_ns=ARGS;
+		}else{
+			light_config.duty_ns=ARGS-(STEP_D*200*level);
+			light_config.period_ns=ARGS;
+		}
 	pwm_config(light_pwm, light_config.duty_ns, light_config.period_ns);
 	pwm_enable(light_pwm);
 }
 int light_open(struct inode *inode,struct file *filp)
 {
 	int level=1;
+	light_level=0;
 /*
 	for(level=1000000;level>0;level--)	
 	{
@@ -327,6 +263,9 @@ int light_open(struct inode *inode,struct file *filp)
 		light_brightness(level);
 	}
 	*/
+	int cds;
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
 	light_obumbrate();
 	light_off();
 	return 0;
@@ -351,13 +290,12 @@ static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 
 
 int light_init(void)
-{
-	
+{	
 	register_chrdev(251,"light",&light_fops);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
 	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
 	s3c_gpio_cfgpin(S3C2410_GPG(3),S3C_GPIO_SFN(2));
-	//int args=1000;
+	//int ARGS=1000;
 	light_pwm=pwm_request(3,"light");
 	if(light_pwm==NULL)
 	{
