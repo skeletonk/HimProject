@@ -55,13 +55,6 @@ static int light_open(struct inode *inode,struct file *filp);
 static int light_release(struct inode *inode,struct file *filp);
 static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg);
 static void light_set(int duty_ns,int period_ns);
-
-
-static void light_brightness(int level);
-static void light_brighten(void);
-static void light_obumbrate(void);
-static void light_off(void);
-
 int light_init(void);
 void light_exit(void);
 
@@ -71,165 +64,11 @@ struct file_operations light_fops = {
 	.unlocked_ioctl = light_ioctl,
 };
 
-
-static void light_brighten(void)
-{
-	int level;
-	for(level=1;level<21;level++)
-	{
-		udelay(800);
-		light_brightness(level);
-		
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-	}
-}
-static void light_obumbrate(void)
-{
-	int level;
-	for(level=20;level>0;level--)
-	{
-		udelay(800);
-		light_brightness(level);
-		
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-	}
-}
-static void light_off(void)
-{
-	pwm_disable(light_pwm);
-	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
-	gpio_set_value(S3C2410_GPB(3),1);
-
-}
-
-
 static void light_brightness(int level)
 {	
 	pwm_disable(light_pwm);
 	switch(level)
 	{
-		case 0:
-			light_config.duty_ns=19990;
-			light_config.period_ns=20000;
-			break;
 		case 1:
 			light_config.duty_ns=19000;
 			light_config.period_ns=20000;
@@ -307,7 +146,7 @@ static void light_brightness(int level)
 			light_config.period_ns=20000;
 			break;
 		case 20:
-			light_config.duty_ns=10;
+			light_config.duty_ns=500;
 			light_config.period_ns=20000;
 			break;
 	}
@@ -327,8 +166,59 @@ int light_open(struct inode *inode,struct file *filp)
 		light_brightness(level);
 	}
 	*/
-	light_obumbrate();
-	light_off();
+	for(level=1;level<20;level++)
+	{
+		udelay(800);
+		light_brightness(level);
+		
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+		udelay(800);
+	}
 	return 0;
 }
 
