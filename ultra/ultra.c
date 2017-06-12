@@ -74,9 +74,7 @@ irqreturn_t int_interrupt(int irq, void *dev_id, struct pt_regs *regs)
 	//TODO
 	printk("testirq\n");
 	do_gettimeofday(&after);
-	printk("%lu %lu\n",after.tv_usec, before.tv_usec);
 	cms = (((unsigned long)(after.tv_usec - before.tv_usec))/58);
-	printk("%ld cm\n",cms);
 
 	return IRQ_HANDLED;
 }
@@ -98,9 +96,8 @@ static int ultra_read(struct file *filp,char *buf,size_t count,loff_t *f_pos)
 {
 	char data[11];
 	output_sonic_burst();
-	sprintf(data,"%ld",cms);
+	sprintf(data,"%ld",cms-8);
 	copy_to_user(buf,data,count);
-	printk("copl\n");
 	return 0;
 }
 

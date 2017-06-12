@@ -17,7 +17,7 @@
 #include <linux/time.h>
 #include <linux/timer.h>
 
-#include <linux/platform_data/leds-s3c24xx.h>
+//#include <linux/platform_data/leds-s3c24xx.h>
 #define DRIVER_AUTHOR 	"YOON"
 #define DRIVER_DESC 	"sample driver"
 
@@ -66,16 +66,24 @@ struct file_operations light_fops = {
 
 int light_open(struct inode *inode,struct file *filp)
 {
+	
+	//int args=15*200000;
+	int args=1000;
 	light_pwm=pwm_request(1,"light");
 	if(light_pwm==NULL)
 	{
 		printk("pwm_request fail\n");
 		return -1;
 	}
-	light_config.duty_ns=4000;
-	light_config.period_ns=10000;
+	//pwm_disable(light_pwm);
+	pwm_disable(light_pwm);
+	light_config.duty_ns=args/2;
+	light_config.period_ns=args;
+	printk("aaaaaaaa\n");
 	pwm_config(light_pwm, light_config.duty_ns, light_config.period_ns);
 	pwm_enable(light_pwm);
+	
+
 	return 0;
 }
 
@@ -95,24 +103,10 @@ static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 
 int light_init(void)
 {
-	int args=1500000;
+	
 	register_chrdev(251,"light",&light_fops);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
 	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
-	
-	light_pwm=pwm_request(1,"light");
-	pwm_disable(light_pwm);
-	light_config.duty_ns=args/8;
-	light_config.period_ns=args;
-	printk("aaaaaaaa\n");
-	pwm_config(light_pwm, light_config.duty_ns, light_config.period_ns);
-	pwm_enable(light_pwm);
-	//while(1){
-	//	gpio_set_value(S3C2410_GPB(3),0);
-	//	udelay(50);
-	//	gpio_set_value(S3C2410_GPB(3),0);
-	//	udelay(50);
-	//}
 
 	printk("Insert light module!\n");
 	return 0;
