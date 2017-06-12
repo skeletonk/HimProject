@@ -66,29 +66,19 @@ struct file_operations light_fops = {
 
 int light_open(struct inode *inode,struct file *filp)
 {
-	
-	//int args=15*200000;
 	int args=1000;
-	light_pwm=pwm_request(1,"light");
-	if(light_pwm==NULL)
-	{
-		printk("pwm_request fail\n");
-		return -1;
-	}
-	//pwm_disable(light_pwm);
 	pwm_disable(light_pwm);
 	light_config.duty_ns=args/2;
 	light_config.period_ns=args;
-	printk("aaaaaaaa\n");
+
 	pwm_config(light_pwm, light_config.duty_ns, light_config.period_ns);
 	pwm_enable(light_pwm);
-	
-
 	return 0;
 }
 
 static int light_release(struct inode *inode,struct file *filp)
 {
+	pwm_disable(light_pwm);
 	pwm_free(light_pwm);
 	return 0;
 }
@@ -108,6 +98,14 @@ int light_init(void)
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
 	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
 
+	//int args=1000;
+	light_pwm=pwm_request(3,"light");
+	if(light_pwm==NULL)
+	{
+		printk("pwm_request fail\n");
+		return -1;
+	}
+	//pwm_disable(light_pwm);
 	printk("Insert light module!\n");
 	return 0;
 
@@ -118,7 +116,7 @@ void light_exit(void)
 	pwm_free(light_pwm);
 	pwm_disable(light_pwm);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
-	gpio_set_value(S3C2410_GPB(3),0);
+	gpio_set_value(S3C2410_GPB(3),1);
 	printk("Remove light module!\n");
 	unregister_chrdev(251,"light");
 }
