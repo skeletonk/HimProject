@@ -1,0 +1,61 @@
+/*
+ * functions
+ * brightness_send   Light state(led brightness)send to SMART PHONE
+ * brightness_receive    Receive from smart phone, Brightness set in brightness
+ * cds_send	      send the cds sensor information(ON/OFF)
+ * ultra_sonic_send      send the ultra sonic sensor value
+ */
+
+
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <termio.h>
+#include <linux/ioctl.h>
+#include "light.h"
+#include "him_test.c"
+
+int main(void)
+{
+	int fd_light,fd_ultra;
+	int retn;
+	//unsigned int level;
+	//char buf[100] = {0,};
+
+
+	fd_light =open("/dev/light",O_RDWR);
+	printf("fd=%d\n",fd_light);
+	if(fd<0)
+	{
+		perror("/dev/light error");
+		exit(-1);
+	}else
+		printf("light has been detected..\n");
+	getchar();
+	level=100;
+	ioctl(fd_light,DEV_LIGHT_LEVEL,&level);
+
+	getchar();
+	level=10;
+	ioctl(fd,DEV_LIGHT_LEVEL,&level);
+	getchar();
+	level=90;
+	ioctl(fd,DEV_LIGHT_LEVEL,&level);
+	getchar();
+	level=60;
+	ioctl(fd,DEV_LIGHT_LEVEL,&level);
+	getchar();
+	ioctl(fd,DEV_LIGHT_OFF);
+	getchar();
+	level=30;
+	ioctl(fd,DEV_LIGHT_LEVEL,&level);
+	getchar();
+	level=80;
+	ioctl(fd,DEV_LIGHT_LEVEL,&level);
+
+	close(fd);
+	printf("light close..\n");
+	return 0;
+}

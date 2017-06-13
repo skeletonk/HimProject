@@ -82,7 +82,8 @@ struct file_operations light_fops = {
 static void light_brightness_setting(int flag,unsigned int set)
 {
 	int level=0;
-	if(light_level<0) light_level =0;
+	//if(light_level<0) light_level =0;
+	//if(light_level>100) light_level =99;
 	if(flag!=1&&set>30) set = 30;
 	if(light_level<set){	
 		for(level=light_level;level<set;level++)
@@ -177,6 +178,7 @@ int light_open(struct inode *inode,struct file *filp)
 
 static int light_release(struct inode *inode,struct file *filp)
 {
+	light_off();
 	pwm_disable(light_pwm);
 	pwm_free(light_pwm);
 	return 0;
@@ -200,7 +202,7 @@ static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 
 int light_init(void)
 {	
-	register_chrdev(251,"light",&light_fops);
+	register_chrdev(250,"light",&light_fops);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
 	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
 	s3c_gpio_cfgpin(S3C2410_GPG(3),S3C_GPIO_SFN(2));
@@ -224,7 +226,7 @@ void light_exit(void)
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
 	gpio_set_value(S3C2410_GPB(3),1);
 	printk("Remove light module!\n");
-	unregister_chrdev(251,"light");
+	unregister_chrdev(250,"light");
 }
 
 

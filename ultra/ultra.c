@@ -72,7 +72,7 @@ void ultra_sonic_exit(void);
 irqreturn_t int_interrupt(int irq, void *dev_id, struct pt_regs *regs)
 {
 	//TODO
-	printk("testirq\n");
+	//printk("testirq\n");
 	do_gettimeofday(&after);
 	cms = (((unsigned long)(after.tv_usec - before.tv_usec))/58);
 
@@ -94,7 +94,7 @@ static int ultra_release(struct file *filp,const char *buf,size_t count, loff_t 
 
 static int ultra_read(struct file *filp,char *buf,size_t count,loff_t *f_pos)
 {
-	char data[11];
+	char data[4];
 	output_sonic_burst();
 	sprintf(data,"%ld",cms-8);
 	copy_to_user(buf,data,count);
