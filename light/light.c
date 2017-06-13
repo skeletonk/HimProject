@@ -20,6 +20,7 @@
 #include <linux/time.h>
 #include <linux/timer.h>
 
+#include "light.h"
 //#include <linux/platform_data/leds-s3c24xx.h>
 #define DRIVER_AUTHOR 	"YOON"
 #define DRIVER_DESC 	"sample driver"
@@ -62,11 +63,10 @@ static struct pwm_config_data light_config;
 static int light_open(struct inode *inode,struct file *filp);
 static int light_release(struct inode *inode,struct file *filp);
 static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg);
-static void light_set(int duty_ns,int period_ns);
 static unsigned int light_level=0;
 
 static void light_brightness(unsigned int level);
-static void light_brighten(int flag,unsigned int set);
+static void light_brightness_setting(int flag,unsigned int set);
 static void light_off(void);
 
 int light_init(void);
@@ -79,11 +79,11 @@ struct file_operations light_fops = {
 };
 
 
-static void light_brighten(int flag,unsigned int set)
+static void light_brightness_setting(int flag,unsigned int set)
 {
-	int level;
+	int level=0;
 	if(light_level<0) light_level =0;
-	if(flag==1&&set>30) set = 30;
+	if(flag!=1&&set>30) set = 30;
 	if(light_level<set){	
 		for(level=light_level;level<set;level++)
 		{
@@ -141,6 +141,7 @@ static void light_off(void)
 	pwm_disable(light_pwm);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
 	gpio_set_value(S3C2410_GPB(3),1);
+	udelay(10);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
 	light_level=0;
 	printk("level %d\n",light_level);
@@ -166,93 +167,10 @@ static void light_brightness(unsigned int level)
 }
 int light_open(struct inode *inode,struct file *filp)
 {
-	light_level=0;
 	int cds;
+	light_level=0;
 	cds=!(gpio_get_value(S3C2410_GPG(3)));
 
-	light_brighten(cds,0);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,10);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,5);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,50);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,25);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,0);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,10);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,5);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,50);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,25);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,0);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,10);
-	light_brighten(cds,5);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,50);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,25);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,0);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,10);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,5);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,50);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,25);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,97);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,10);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,5);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,50);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,25);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,0);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,10);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,5);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,98);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,15);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,25);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-	light_brighten(cds,99);
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
 	light_off();
 	return 0;
 }
@@ -267,11 +185,16 @@ static int light_release(struct inode *inode,struct file *filp)
 static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 {
 	int cds;
+	static unsigned int level;
 	cds=gpio_get_value(S3C2410_GPG(3));
+	if(_IOC_TYPE(cmd)!=DEV_LIGHT_IOCTL_MAGIC) return -EINVAL;
+	if(_IOC_NR(cmd) >= DEV_LIGHT_IOCTL_MAXNR) return -EINVAL;
+	copy_from_user((void *)&level,(const void*)arg,sizeof(unsigned int));
 
-	copy_from_user((void*)&light_config,(const void*)arg,sizeof(light_config));
-	pwm_config(light_pwm, light_config.duty_ns, light_config.period_ns);
-	pwm_enable(light_pwm);
+	if(level==0) light_off();
+	if(level!=0) light_brightness_setting(cds,level);
+	
+	
 }
 
 

@@ -15,4 +15,4 @@ all:
 	cp $(KTARGET).ko $(NFSDIR)
 clean:
 	make -C$(KDIR) SUBDIRS=$(PWD) clean
-#	rm $(TARGET)
+	rm $(TARGET)
