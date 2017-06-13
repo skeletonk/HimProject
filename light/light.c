@@ -63,11 +63,10 @@ static int light_open(struct inode *inode,struct file *filp);
 static int light_release(struct inode *inode,struct file *filp);
 static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg);
 static void light_set(int duty_ns,int period_ns);
-static int light_level=0;
+static unsigned int light_level=0;
 
-static void light_brightness(int level);
-static void light_brighten(int flag,int set);
-static void light_obumbrate(void);
+static void light_brightness(unsigned int level);
+static void light_brighten(int flag,unsigned int set);
 static void light_off(void);
 
 int light_init(void);
@@ -80,55 +79,62 @@ struct file_operations light_fops = {
 };
 
 
-static void light_brighten(int flag,int set)
+static void light_brighten(int flag,unsigned int set)
 {
 	int level;
-	for(level=light_level;level<MAX_LEVEL-(flag*((MAX_LEVEL-1)-set));level++)
-	{
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		light_brightness(level);
-		
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		printk("level %d\n",level);
+	if(light_level<0) light_level =0;
+	if(flag==1&&set>30) set = 30;
+	if(light_level<set){	
+		for(level=light_level;level<set;level++)
+		{
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			light_brightness(level);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			printk("level %d\n",level);
+			light_level=level;
+		}
 	}
-	light_level=level;
-}
-static void light_obumbrate(void)
-{
-	int level;
-	for(level=light_level;level>0;level--)
+	else if(light_level>set)
+	{	
+		for(level=light_level;level>set;level--)
+		{
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			light_brightness(level);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			udelay(800);
+			printk("level %d\n",level);
+			light_level=level;
+		}
+	}else if(light_level==set)
 	{
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
 		light_brightness(level);
-		
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		udelay(800);
-		printk("level %d\n",level);
+	}else{
+		light_brightness(level);
 	}
-	light_level=level;
+
 }
 static void light_off(void)
 {
@@ -141,101 +147,10 @@ static void light_off(void)
 }
 
 
-static void light_brightness(int level)
+static void light_brightness(unsigned int level)
 {	
 	pwm_disable(light_pwm);
-	/*
-	switch(level)
-	{
-		case 0:
-			light_config.duty_ns=19990;
-			light_config.period_ns=20000;
-			break;
-		case 1:
-			light_config.duty_ns=19000;
-			light_config.period_ns=20000;
-			break;
-		case 2:
-			light_config.duty_ns=18000;
-			light_config.period_ns=20000;
-			break;
-		case 3:
-			light_config.duty_ns=17000;
-			light_config.period_ns=20000;
-			break;
-		case 4:
-			light_config.duty_ns=16000;
-			light_config.period_ns=20000;
-			break;
-		case 5:
-			light_config.duty_ns=15000;
-			light_config.period_ns=20000;
-			break;
-		case 6:
-			light_config.duty_ns=14000;
-			light_config.period_ns=20000;
-			break;
-		case 7:
-			light_config.duty_ns=13000;
-			light_config.period_ns=20000;
-			break;
-		case 8:
-			light_config.duty_ns=12000;
-			light_config.period_ns=20000;
-			break;
-		case 9:
-			light_config.duty_ns=11000;
-			light_config.period_ns=20000;
-			break;
-		case 10:
-			light_config.duty_ns=10000;
-			light_config.period_ns=20000;
-			break;
-		case 11:
-			light_config.duty_ns=9000;
-			light_config.period_ns=20000;
-			break;
-		case 12:
-			light_config.duty_ns=8000;
-			light_config.period_ns=20000;
-			break;
-		case 13:
-			light_config.duty_ns=7000;
-			light_config.period_ns=20000;
-			break;
-		case 14:
-			light_config.duty_ns=6000;
-			light_config.period_ns=20000;
-			break;
-		case 15:
-			light_config.duty_ns=5000;
-			light_config.period_ns=20000;
-			break;
-		case 16:
-			light_config.duty_ns=4000;
-			light_config.period_ns=20000;
-			break;
-		case 17:
-			light_config.duty_ns=3000;
-			light_config.period_ns=20000;
-			break;
-		case 18:
-			light_config.duty_ns=2000;
-			light_config.period_ns=20000;
-			break;
-		case 19:
-			light_config.duty_ns=1000;
-			light_config.period_ns=20000;
-			break;
-		case 20:
-			light_config.duty_ns=10;
-			light_config.period_ns=20000;
-			break;
-	}*/
-	if(level*STEP_D>100) level=100/(STEP_D+1);
-	
-		
-	
+	if(level*STEP_D>100) level=100/(STEP_D+1);	
 	if(level==0){
 			light_config.duty_ns=ARGS-10;
 			light_config.period_ns=ARGS;
@@ -251,22 +166,93 @@ static void light_brightness(int level)
 }
 int light_open(struct inode *inode,struct file *filp)
 {
-	int level=1;
 	light_level=0;
-/*
-	for(level=1000000;level>0;level--)	
-	{
-		light_brightness(level);
-	}
-	for(level=1;level<100000;level++)	
-	{
-		light_brightness(level);
-	}
-	*/
 	int cds;
 	cds=!(gpio_get_value(S3C2410_GPG(3)));
+
+	light_brighten(cds,0);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,10);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,5);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,50);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
 	light_brighten(cds,15);
-	light_obumbrate();
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,25);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,0);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,10);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,5);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,50);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,25);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,0);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,10);
+	light_brighten(cds,5);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,50);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,25);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,0);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,10);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,5);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,50);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,25);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,97);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,10);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,5);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,50);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,25);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,0);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,10);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,5);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,98);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,15);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,25);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
+	light_brighten(cds,99);
+	cds=!(gpio_get_value(S3C2410_GPG(3)));
 	light_off();
 	return 0;
 }
