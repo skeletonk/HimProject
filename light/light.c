@@ -21,6 +21,7 @@
 #include <linux/timer.h>
 
 #include "light.h"
+#include "himp.h"
 //#include <linux/platform_data/leds-s3c24xx.h>
 #define DRIVER_AUTHOR 	"YOON"
 #define DRIVER_DESC 	"sample driver"
@@ -61,6 +62,7 @@ struct pwm_config_data {
 static struct pwm_device *light_pwm;
 static struct pwm_config_data light_config;
 static int light_open(struct inode *inode,struct file *filp);
+static int light_read(struct file *filp,const char *buf,size_t count,loff_t *f_pos);
 static int light_release(struct inode *inode,struct file *filp);
 static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg);
 static unsigned int light_level=0;
@@ -69,16 +71,29 @@ static void light_brightness(unsigned int level);
 static void light_brightness_setting(int flag,unsigned int set);
 static void light_off(void);
 
+
+
 int light_init(void);
 void light_exit(void);
 
 struct file_operations light_fops = {
 	.open		= light_open,
 	.release	= light_release,
+	.read		= light_read,
 	.unlocked_ioctl = light_ioctl,
 };
 
 
+static int light_read(struct file *filp,const char *buf,size_t count,loff_t *f_pos)
+{
+	Him_data data;
+	//sprintf(data,"%u",light_level);
+	data.light_level=light_level;
+	
+	data.cds=gpio_get_value(S3C2410_GPG(3));
+	copy_to_user(buf,(void *)&data,count);
+	return 0;
+}
 static void light_brightness_setting(int flag,unsigned int set)
 {
 	int level=0;
@@ -103,7 +118,6 @@ static void light_brightness_setting(int flag,unsigned int set)
 			udelay(800);
 			udelay(800);
 			udelay(800);
-			printk("level %d\n",level);
 			light_level=level;
 		}
 	}
@@ -126,7 +140,6 @@ static void light_brightness_setting(int flag,unsigned int set)
 			udelay(800);
 			udelay(800);
 			udelay(800);
-			printk("level %d\n",level);
 			light_level=level;
 		}
 	}else if(light_level==set)
@@ -145,7 +158,6 @@ static void light_off(void)
 	udelay(10);
 	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
 	light_level=0;
-	printk("level %d\n",light_level);
 }
 
 

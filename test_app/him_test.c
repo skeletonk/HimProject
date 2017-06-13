@@ -61,10 +61,10 @@ int main(void)
 		for(i=0;i<15;i++){
 			
 			for(j=0;j<1000000;j++);
-			retn = read(fd_ultra,datas.ultra,32);
+			retn = read(fd_ultra,datas.ultra,4);
 			value=(unsigned int)atoi(datas.ultra);
 
-			printf("%u \n",value);
+
 			if(value>10&&value<100)
 			{
 				sum=sum+value;
@@ -77,6 +77,11 @@ int main(void)
 		if(datas.light_level>100) datas.light_level=99;
 		if(datas.light_level<0) datas.light_level=0;
 		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_level);
+
+		retn = read(fd_light,&datas,sizeof(datas));
+		//datas.light_level=atoi(buf);
+
+		printf("%u % ,%d\n",datas.light_level,datas.cds);
 	}
 	getchar();
 	datas.light_level=100;

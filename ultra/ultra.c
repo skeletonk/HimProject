@@ -96,7 +96,7 @@ static int ultra_read(struct file *filp,char *buf,size_t count,loff_t *f_pos)
 {
 	char data[4];
 	output_sonic_burst();
-	sprintf(data,"%ld",cms-8);
+	sprintf(data,"%u",cms-8);
 	copy_to_user(buf,data,count);
 	return 0;
 }

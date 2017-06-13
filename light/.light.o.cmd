@@ -421,6 +421,7 @@ deps_/work/project/light/light.o := \
     $(wildcard include/config/gpio/sysfs.h) \
   arch/arm/mach-s3c2410/include/mach/gpio-fns.h \
   /work/project/light/light.h \
+  /work/project/light/himp.h \
 
 /work/project/light/light.o: $(deps_/work/project/light/light.o)
 
