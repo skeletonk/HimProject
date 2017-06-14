@@ -88,10 +88,10 @@ static int light_read(struct file *filp,const char *buf,size_t count,loff_t *f_p
 {
 	Him_data data;
 	//sprintf(data,"%u",light_level);
+	data.cds=!gpio_get_value(S3C2410_GPG(3));
 	data.light_level=light_level;
-	
-	data.cds=gpio_get_value(S3C2410_GPG(3));
-	copy_to_user(buf,(void *)&data,count);
+
+	copy_to_user(buf,&data,count);
 	return 0;
 }
 static void light_brightness_setting(int flag,unsigned int set)
@@ -107,18 +107,13 @@ static void light_brightness_setting(int flag,unsigned int set)
 			udelay(800);
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_brightness(level);
 			udelay(800);
 			udelay(800);
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_level=level;
+			printk("debug %d\n",level);
 		}
 	}
 	else if(light_level>set)
@@ -129,18 +124,13 @@ static void light_brightness_setting(int flag,unsigned int set)
 			udelay(800);
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_brightness(level);
 			udelay(800);
 			udelay(800);
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_level=level;
+			printk("debug %d\n",level);
 		}
 	}else if(light_level==set)
 	{
@@ -180,10 +170,7 @@ static void light_brightness(unsigned int level)
 }
 int light_open(struct inode *inode,struct file *filp)
 {
-	int cds;
 	light_level=0;
-	cds=!(gpio_get_value(S3C2410_GPG(3)));
-
 	light_off();
 	return 0;
 }
@@ -215,9 +202,11 @@ static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 int light_init(void)
 {	
 	register_chrdev(250,"light",&light_fops);
-	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
-	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
+	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
+	gpio_set_value(S3C2410_GPB(3),1);
+	udelay(10);
 	s3c_gpio_cfgpin(S3C2410_GPG(3),S3C_GPIO_SFN(2));
+	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
 	//int ARGS=1000;
 	light_pwm=pwm_request(3,"light");
 	if(light_pwm==NULL)

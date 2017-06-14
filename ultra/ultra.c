@@ -28,6 +28,8 @@
 #include <plat/gpio-cfg.h>
 #include <linux/ioctl.h>
 
+#include "himp.h"
+
 #define DRIVER_AUTHOR 	"YOON"
 #define DRIVER_DESC 	"ultra sonic driver"
 
@@ -94,10 +96,10 @@ static int ultra_release(struct file *filp,const char *buf,size_t count, loff_t 
 
 static int ultra_read(struct file *filp,char *buf,size_t count,loff_t *f_pos)
 {
-	char data[4];
+	Him_data hm;
 	output_sonic_burst();
-	sprintf(data,"%u",cms-8);
-	copy_to_user(buf,data,count);
+	hm.ultra=cms-8;
+	copy_to_user(buf,(void *)&hm.ultra,count);
 	return 0;
 }
 

@@ -426,6 +426,7 @@ deps_/work/project/ultra/ultra.o := \
   arch/arm/plat-samsung/include/plat/gpio-cfg.h \
     $(wildcard include/config/s5p/gpio/int.h) \
   arch/arm/mach-s3c2410/include/mach/regs-gpio.h \
+  /work/project/ultra/himp.h \
 
 /work/project/ultra/ultra.o: $(deps_/work/project/ultra/ultra.o)
 
