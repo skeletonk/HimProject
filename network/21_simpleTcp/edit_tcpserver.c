@@ -7,7 +7,8 @@
 #include <strings.h>
 
 #define SERV_TCP_PORT  8888  /* TCP Server port */
-
+//192.168.0.201
+//123.214.186.212 8888
 int main ( int argc, char* argv[] ) {
     int sockfd, newsockfd, clilen;
     struct sockaddr_in  cli_addr;
@@ -69,6 +70,9 @@ int main ( int argc, char* argv[] ) {
 			exit(1);
 		}
 		//++
+		//-------------------App------------------------//
+
+		//-------------------App------------------------//
 
 		close( newsockfd );
 	}
