@@ -105,15 +105,10 @@ static void light_brightness_setting(int flag,unsigned int set)
 		{
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_brightness(level);
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_level=level;
-			printk("debug %d\n",level);
 		}
 	}
 	else if(light_level>set)
@@ -122,15 +117,10 @@ static void light_brightness_setting(int flag,unsigned int set)
 		{
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_brightness(level);
 			udelay(800);
 			udelay(800);
-			udelay(800);
-			udelay(800);
 			light_level=level;
-			printk("debug %d\n",level);
 		}
 	}else if(light_level==set)
 	{

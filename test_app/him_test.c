@@ -49,19 +49,22 @@ int main(void)
 		printf("light has been detected..\n");
 
 	init_Him_data(&datas);
-
+	
 	/* ------------- application area --------------------*/
 	while(1){
 		Him_status_send(&datas,1,fd_ultra,fd_light);
-
-		if(datas.light_set>100||datas.light_set<1){ datas.light_set = 100;}
-		else{datas.light_set-=10;}
-		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
-
 		printf("status\n");
 		printf("cds status : %u\n",datas.cds);
 		printf("light_level : %u\n",datas.light_level);
 		printf("ultra sonic sensor state : %u cm\n",datas.ultra);
+
+		brightness_receive(&datas,1,fd_light);
+		if(datas.light_set>100||datas.light_set<21) datas.light_set = 100;
+		else datas.light_set-=20;
+		
+		if(datas.ultra<130&&datas.ultra>15) ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		else ioctl(fd_light,DEV_LIGHT_LEVEL,0);
+
 		getchar();
 	}
 	getchar();
@@ -78,6 +81,8 @@ void Him_status_send(Him_data *hm,int sock_fd,int fd_ultra, int fd_light)
 	unsigned int sum=0;
 	unsigned int sensor_cnt=0;
 	unsigned int value=0;
+	unsigned int temp;
+	temp=hm->light_set;
 	read(fd_light,hm,sizeof(Him_data));
 	for(i=0;i<15;i++){	
 		for(j=0;j<1000000;j++);
@@ -89,15 +94,25 @@ void Him_status_send(Him_data *hm,int sock_fd,int fd_ultra, int fd_light)
 		}	
 	}
 	hm->ultra=sum/(sensor_cnt+1);
+	hm->light_set=temp;
 	//TODO send.........
 
 
 }
 void brightness_receive(Him_data *hm, int sock_d, int fd_light)
 {
+	Him_data temp;
+	temp.light_level=hm->light_level;
+	temp.light_set = hm->light_set;
+	temp.cds=hm->cds;
+	temp.ultra=hm->ultra;
 	//hm.light_set=
+
 	if(hm->light_set>100) hm->light_set=99;
 	if(hm->light_set<0) hm->light_set=0;
+	hm->light_level=temp.light_level;
+	hm->cds=temp.cds;
+	hm->ultra=temp.ultra;
 }
 
 void init_Him_data(Him_data *him)
