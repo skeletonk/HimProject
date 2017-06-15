@@ -7,7 +7,7 @@
 #include <strings.h>
 
 #define SERV_TCP_PORT  8888  /* TCP Server port */
-//192.168.0.201
+//192.168.0.199
 //123.214.186.212 8888
 int main ( int argc, char* argv[] ) {
     int sockfd, newsockfd, clilen;
@@ -52,22 +52,29 @@ int main ( int argc, char* argv[] ) {
 	while(1) {
 //call accept	
         newsockfd = accept(sockfd,(struct sockaddr*) &cli_addr, &clilen);
+
         if ( newsockfd < 0 ) {
 			puts("Server: accept error!");
 			exit(1);
 		}
-    
-		if ((size = read(newsockfd, buff, 20)) <= 0 ) {
-			puts( "Server: readn error!");
-			exit(1);
-		}
-		printf("reading newsockfd from Client = %d\n", size);
-		printf("Server: Received String = %s \n", buff);
+		printf("accept\n");
+    		while(1)
+		{
+			if ((size = read(newsockfd, buff, 20)) <= 0 ) {
+				puts( "Server: readn error!");
+				exit(1);
+			}
+			printf("reading newsockfd from Client = %d\n", size);
+			printf("Server: Received String = %s \n", buff);
+			if(buff[0]=='1') break;
 		
-		//++
+		
+		
+		
 		if ( write(newsockfd, "It's so sunny day!", 20+1) < 21 ) {
 			puts( "Server: written error" );
 			exit(1);
+		}
 		}
 		//++
 		//-------------------App------------------------//

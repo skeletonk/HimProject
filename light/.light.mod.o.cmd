@@ -1,4 +1,4 @@
-cmd_/work/project/light/light.mod.o := arm-none-linux-gnueabi-gcc -Wp,-MD,/work/project/light/.light.mod.o.d  -nostdinc -isystem /usr/local/arm-2010q1/bin/../lib/gcc/arm-none-linux-gnueabi/4.4.1/include -I/work/kernel-mds2450-3.0.22/arch/arm/include -Iarch/arm/include/generated -Iinclude  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-s3c2410/include -Iarch/arm/mach-s3c2400/include -Iarch/arm/mach-s3c2412/include -Iarch/arm/mach-s3c2416/include -Iarch/arm/mach-s3c2440/include -Iarch/arm/mach-s3c2443/include -Iarch/arm/plat-s3c24xx/include -Iarch/arm/plat-samsung/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -O2 -marm -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=5 -march=armv5te -mtune=arm9tdmi -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(light.mod)"  -D"KBUILD_MODNAME=KBUILD_STR(light)" -DMODULE  -c -o /work/project/light/light.mod.o /work/project/light/light.mod.c
+cmd_/work/project/light/light.mod.o := arm-none-linux-gnueabi-gcc -Wp,-MD,/work/project/light/.light.mod.o.d  -nostdinc -isystem /usr/local/arm-2010q1/bin/../lib/gcc/arm-none-linux-gnueabi/4.4.1/include -I/work/kernel/arch/arm/include -Iarch/arm/include/generated -Iinclude  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-s3c2410/include -Iarch/arm/mach-s3c2400/include -Iarch/arm/mach-s3c2412/include -Iarch/arm/mach-s3c2416/include -Iarch/arm/mach-s3c2440/include -Iarch/arm/mach-s3c2443/include -Iarch/arm/plat-s3c24xx/include -Iarch/arm/plat-samsung/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -O2 -marm -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=5 -march=armv5te -mtune=arm9tdmi -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(light.mod)"  -D"KBUILD_MODNAME=KBUILD_STR(light)" -DMODULE  -c -o /work/project/light/light.mod.o /work/project/light/light.mod.c
 
 source_/work/project/light/light.mod.o := /work/project/light/light.mod.c
 
@@ -27,9 +27,9 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/arch/dma/addr/t/64bit.h) \
     $(wildcard include/config/phys/addr/t/64bit.h) \
     $(wildcard include/config/64bit.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/types.h \
+  /work/kernel/arch/arm/include/asm/types.h \
   include/asm-generic/int-ll64.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/bitsperlong.h \
+  /work/kernel/arch/arm/include/asm/bitsperlong.h \
   include/asm-generic/bitsperlong.h \
   include/linux/posix_types.h \
   include/linux/stddef.h \
@@ -43,12 +43,12 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/arch/supports/optimized/inlining.h) \
     $(wildcard include/config/optimize/inlining.h) \
   include/linux/compiler-gcc4.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/posix_types.h \
+  /work/kernel/arch/arm/include/asm/posix_types.h \
   include/linux/poison.h \
     $(wildcard include/config/illegal/pointer/value.h) \
   include/linux/const.h \
   include/linux/stat.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/stat.h \
+  /work/kernel/arch/arm/include/asm/stat.h \
   include/linux/time.h \
     $(wildcard include/config/arch/uses/gettimeoffset.h) \
   include/linux/cache.h \
@@ -62,10 +62,10 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/compaction.h) \
   /usr/local/arm-2010q1/bin/../lib/gcc/arm-none-linux-gnueabi/4.4.1/include/stdarg.h \
   include/linux/linkage.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/linkage.h \
+  /work/kernel/arch/arm/include/asm/linkage.h \
   include/linux/bitops.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/bitops.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/system.h \
+  /work/kernel/arch/arm/include/asm/bitops.h \
+  /work/kernel/arch/arm/include/asm/system.h \
     $(wildcard include/config/function/graph/tracer.h) \
     $(wildcard include/config/cpu/32v6k.h) \
     $(wildcard include/config/cpu/xsc3.h) \
@@ -81,15 +81,15 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/preempt/tracer.h) \
     $(wildcard include/config/trace/irqflags/support.h) \
   include/linux/typecheck.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/irqflags.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/ptrace.h \
+  /work/kernel/arch/arm/include/asm/irqflags.h \
+  /work/kernel/arch/arm/include/asm/ptrace.h \
     $(wildcard include/config/cpu/endian/be8.h) \
     $(wildcard include/config/arm/thumb.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/hwcap.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/outercache.h \
+  /work/kernel/arch/arm/include/asm/hwcap.h \
+  /work/kernel/arch/arm/include/asm/outercache.h \
     $(wildcard include/config/outer/cache/sync.h) \
     $(wildcard include/config/outer/cache.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/memory.h \
+  /work/kernel/arch/arm/include/asm/memory.h \
     $(wildcard include/config/mmu.h) \
     $(wildcard include/config/page/offset.h) \
     $(wildcard include/config/thumb2/kernel.h) \
@@ -100,7 +100,7 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-s3c2410/include/mach/memory.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/sizes.h \
+  /work/kernel/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
     $(wildcard include/config/flatmem.h) \
@@ -117,10 +117,10 @@ deps_/work/project/light/light.mod.o := \
   include/asm-generic/bitops/const_hweight.h \
   include/asm-generic/bitops/lock.h \
   include/asm-generic/bitops/le.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/byteorder.h \
+  /work/kernel/arch/arm/include/asm/byteorder.h \
   include/linux/byteorder/little_endian.h \
   include/linux/swab.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/swab.h \
+  /work/kernel/arch/arm/include/asm/swab.h \
   include/linux/byteorder/generic.h \
   include/linux/log2.h \
     $(wildcard include/config/arch/has/ilog2/u32.h) \
@@ -131,13 +131,13 @@ deps_/work/project/light/light.mod.o := \
   include/linux/init.h \
     $(wildcard include/config/hotplug.h) \
   include/linux/dynamic_debug.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/bug.h \
+  /work/kernel/arch/arm/include/asm/bug.h \
     $(wildcard include/config/bug.h) \
     $(wildcard include/config/debug/bugverbose.h) \
   include/asm-generic/bug.h \
     $(wildcard include/config/generic/bug/relative/pointers.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/div64.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/cache.h \
+  /work/kernel/arch/arm/include/asm/div64.h \
+  /work/kernel/arch/arm/include/asm/cache.h \
     $(wildcard include/config/arm/l1/cache/shift.h) \
     $(wildcard include/config/aeabi.h) \
   include/linux/seqlock.h \
@@ -151,12 +151,12 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/preempt/notifiers.h) \
   include/linux/thread_info.h \
     $(wildcard include/config/compat.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/thread_info.h \
+  /work/kernel/arch/arm/include/asm/thread_info.h \
     $(wildcard include/config/arm/thumbee.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/fpstate.h \
+  /work/kernel/arch/arm/include/asm/fpstate.h \
     $(wildcard include/config/vfpv3.h) \
     $(wildcard include/config/iwmmxt.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/domain.h \
+  /work/kernel/arch/arm/include/asm/domain.h \
     $(wildcard include/config/io/36.h) \
     $(wildcard include/config/cpu/use/domains.h) \
   include/linux/stringify.h \
@@ -169,13 +169,13 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/prove/rcu.h) \
   include/linux/rwlock_types.h \
   include/linux/spinlock_up.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/processor.h \
+  /work/kernel/arch/arm/include/asm/processor.h \
     $(wildcard include/config/have/hw/breakpoint.h) \
     $(wildcard include/config/arm/errata/754327.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/hw_breakpoint.h \
+  /work/kernel/arch/arm/include/asm/hw_breakpoint.h \
   include/linux/rwlock.h \
   include/linux/spinlock_api_up.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/atomic.h \
+  /work/kernel/arch/arm/include/asm/atomic.h \
     $(wildcard include/config/generic/atomic64.h) \
   include/asm-generic/atomic64.h \
   include/asm-generic/atomic-long.h \
@@ -203,7 +203,7 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/holes/in/zone.h) \
     $(wildcard include/config/arch/has/holes/memorymodel.h) \
   include/linux/wait.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/current.h \
+  /work/kernel/arch/arm/include/asm/current.h \
   include/linux/threads.h \
     $(wildcard include/config/nr/cpus.h) \
     $(wildcard include/config/base/small.h) \
@@ -213,12 +213,12 @@ deps_/work/project/light/light.mod.o := \
   include/linux/bitmap.h \
   include/linux/string.h \
     $(wildcard include/config/binary/printf.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/string.h \
+  /work/kernel/arch/arm/include/asm/string.h \
   include/linux/pageblock-flags.h \
     $(wildcard include/config/hugetlb/page.h) \
     $(wildcard include/config/hugetlb/page/size/variable.h) \
   include/generated/bounds.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/page.h \
+  /work/kernel/arch/arm/include/asm/page.h \
     $(wildcard include/config/cpu/copy/v3.h) \
     $(wildcard include/config/cpu/copy/v4wt.h) \
     $(wildcard include/config/cpu/copy/v4wb.h) \
@@ -226,14 +226,14 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/cpu/copy/fa.h) \
     $(wildcard include/config/cpu/xscale.h) \
     $(wildcard include/config/cpu/copy/v6.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/glue.h \
+  /work/kernel/arch/arm/include/asm/glue.h \
   include/asm-generic/getorder.h \
   include/linux/memory_hotplug.h \
     $(wildcard include/config/memory/hotremove.h) \
     $(wildcard include/config/have/arch/nodedata/extension.h) \
   include/linux/notifier.h \
   include/linux/errno.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/errno.h \
+  /work/kernel/arch/arm/include/asm/errno.h \
   include/asm-generic/errno.h \
   include/asm-generic/errno-base.h \
   include/linux/mutex.h \
@@ -261,11 +261,11 @@ deps_/work/project/light/light.mod.o := \
     $(wildcard include/config/need/per/cpu/page/first/chunk.h) \
     $(wildcard include/config/have/setup/per/cpu/area.h) \
   include/linux/pfn.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/percpu.h \
+  /work/kernel/arch/arm/include/asm/percpu.h \
   include/asm-generic/percpu.h \
   include/linux/percpu-defs.h \
     $(wildcard include/config/debug/force/weak/per/cpu.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/topology.h \
+  /work/kernel/arch/arm/include/asm/topology.h \
   include/asm-generic/topology.h \
   include/linux/mmdebug.h \
     $(wildcard include/config/debug/vm.h) \
@@ -281,9 +281,9 @@ deps_/work/project/light/light.mod.o := \
   include/linux/jiffies.h \
   include/linux/timex.h \
   include/linux/param.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/param.h \
+  /work/kernel/arch/arm/include/asm/param.h \
     $(wildcard include/config/hz.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/timex.h \
+  /work/kernel/arch/arm/include/asm/timex.h \
   arch/arm/mach-s3c2410/include/mach/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
@@ -303,8 +303,8 @@ deps_/work/project/light/light.mod.o := \
   include/linux/rcutree.h \
   include/linux/elf.h \
   include/linux/elf-em.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/elf.h \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/user.h \
+  /work/kernel/arch/arm/include/asm/elf.h \
+  /work/kernel/arch/arm/include/asm/user.h \
   include/linux/kobject.h \
   include/linux/sysfs.h \
   include/linux/kobject_ns.h \
@@ -316,7 +316,7 @@ deps_/work/project/light/light.mod.o := \
   include/linux/tracepoint.h \
   include/linux/jump_label.h \
     $(wildcard include/config/jump/label.h) \
-  /work/kernel-mds2450-3.0.22/arch/arm/include/asm/module.h \
+  /work/kernel/arch/arm/include/asm/module.h \
     $(wildcard include/config/arm/unwind.h) \
   include/trace/events/module.h \
   include/trace/define_trace.h \

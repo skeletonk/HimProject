@@ -1,1 +1,1 @@
-cmd_/work/project/ultra/ultra.ko := arm-none-linux-gnueabi-ld -EL -r  -T /work/kernel-mds2450-3.0.22/scripts/module-common.lds --build-id  -o /work/project/ultra/ultra.ko /work/project/ultra/ultra.o /work/project/ultra/ultra.mod.o
+cmd_/work/project/ultra/ultra.ko := arm-none-linux-gnueabi-ld -EL -r  -T /work/kernel/scripts/module-common.lds --build-id  -o /work/project/ultra/ultra.ko /work/project/ultra/ultra.o /work/project/ultra/ultra.mod.o

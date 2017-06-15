@@ -51,22 +51,40 @@ int main(void)
 	init_Him_data(&datas);
 	
 	/* ------------- application area --------------------*/
-	while(1){
-		Him_status_send(&datas,1,fd_ultra,fd_light);
-		printf("status\n");
-		printf("cds status : %u\n",datas.cds);
-		printf("light_level : %u\n",datas.light_level);
-		printf("ultra sonic sensor state : %u cm\n",datas.ultra);
+	
+		//Him_status_send(&datas,1,fd_ultra,fd_light);
+		//printf("status\n");
+		//printf("cds status : %u\n",datas.cds);
+		//printf("light_level : %u\n",datas.light_level);
+		//printf("ultra sonic sensor state : %u cm\n",datas.ultra);
 
-		brightness_receive(&datas,1,fd_light);
-		if(datas.light_set>100||datas.light_set<21) datas.light_set = 100;
-		else datas.light_set-=20;
+		//brightness_receive(&datas,1,fd_light);
+		//if(datas.light_set>100||datas.light_set<21) datas.light_set = 100;
+		//else datas.light_set-=20;
 		
-		if(datas.ultra<130&&datas.ultra>15) ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
-		else ioctl(fd_light,DEV_LIGHT_LEVEL,0);
-
+		//if(datas.ultra<130&&datas.ultra>15) ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		//else ioctl(fd_light,DEV_LIGHT_LEVEL,40);
+		
 		getchar();
-	}
+		datas.light_set=99;
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		getchar();
+		datas.light_set=2;
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		getchar();
+		datas.light_set=2;
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		getchar();
+		datas.light_set=80;
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		getchar();
+		datas.light_set=40;
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		getchar();
+		datas.light_set=2;
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		getchar();
+	
 	getchar();
 	/* -------------application area ---------------------*/
 	close(fd_light);

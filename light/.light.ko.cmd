@@ -1,1 +1,1 @@
-cmd_/work/project/light/light.ko := arm-none-linux-gnueabi-ld -EL -r  -T /work/kernel-mds2450-3.0.22/scripts/module-common.lds --build-id  -o /work/project/light/light.ko /work/project/light/light.o /work/project/light/light.mod.o
+cmd_/work/project/light/light.ko := arm-none-linux-gnueabi-ld -EL -r  -T /work/kernel/scripts/module-common.lds --build-id  -o /work/project/light/light.ko /work/project/light/light.o /work/project/light/light.mod.o

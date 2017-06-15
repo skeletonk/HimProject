@@ -51,14 +51,7 @@ int main ( int argc, char* argv[] ) {
 
 
 
-	fd_light =open("/dev/light",O_RDWR);
-	printf("fd_light=%d\n",fd_light);
-	if(fd_light<0)
-	{
-		perror("/dev/light error");
-		exit(-1);
-	}else
-		printf("light has been detected..\n");
+
 
 	fd_ultra =open("/dev/ultra",O_RDWR);
 	printf("fd_ultra=%d\n",fd_ultra);
@@ -68,6 +61,15 @@ int main ( int argc, char* argv[] ) {
 		exit(-1);
 	}else
 		printf("light has been detected..\n");
+
+	fd_light =open("/dev/light",O_RDWR);
+	printf("fd_light=%d\n",fd_light);
+	if(fd_light<0)
+	{
+		perror("/dev/light error");
+		exit(-1);
+	}else
+	printf("light has been detected..\n");
 
 	init_Him_data(&datas);
 
@@ -107,22 +109,33 @@ int main ( int argc, char* argv[] ) {
 			puts("Server: accept error!");
 			exit(1);
 		}
-    
-		if ((size = read(newsockfd, buff, 20)) <= 0 ) {
+   		while(1){/* 
+		if ((size = read(newsockfd,&datas.light_set,sizeof(datas.light_set))) <= 0 ) {
 			puts( "Server: readn error!");
 			exit(1);
 		}
+		*/
+
+		brightness_receive(&datas,newsockfd,fd_light);
+		//ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
 		printf("reading newsockfd from Client = %d\n", size);
 		printf("Server: Received String = %s \n", buff);
-		
+		if(strcmp(buff,"end")==0)
+			{
+				printf("end of sock %d\n",newsockfd);
+				break;
+			}
 		//++
+		
 		if ( write(newsockfd, "It's so sunny day!", 20+1) < 21 ) {
 			puts( "Server: written error" );
 			exit(1);
 		}
+		
+		
 		//++
 		//-------------------App------------------------//
-
+		/*
 		while(1){
 			Him_status_send(&datas,newsockfd,fd_ultra,fd_light);
 			printf("status\n");
@@ -142,11 +155,12 @@ int main ( int argc, char* argv[] ) {
 			getchar();
 		}
 		getchar();
-		/* -------------application area ---------------------*/
 		close(fd_light);
 		close(fd_ultra);
 		printf("light close..\n");
 		printf("ultra close..\n");
+		*/
+		}
 		close( newsockfd );
 	}
     	close( sockfd );
@@ -184,12 +198,21 @@ void Him_status_send(Him_data *hm,int sock_fd,int fd_ultra, int fd_light)
 void brightness_receive(Him_data *hm, int sock_d, int fd_light)
 {
 	Him_data temp;
+	char buff[30]={0,};
+	int size;
 	temp.light_level=hm->light_level;
 	temp.light_set = hm->light_set;
 	temp.cds=hm->cds;
 	temp.ultra=hm->ultra;
 	//TODO receive func
 
+	if ((size = read(sock_d,buff,20+1)) <= 0 ) {
+		puts( "Server: readn error!");
+		exit(1);
+	}
+	printf("%s\n",buff);
+	hm->light_set=atoi(buff);
+	printf("%d\n",hm->light_set);
 	if(hm->light_set>100) hm->light_set=99;
 	if(hm->light_set<0) hm->light_set=0;
 	hm->light_level=temp.light_level;

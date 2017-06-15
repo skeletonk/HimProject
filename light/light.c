@@ -4,6 +4,7 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
+#include <linux/vmalloc.h>
 
 #include <asm/delay.h>
 #include <asm/uaccess.h>
@@ -17,8 +18,8 @@
 #include <mach/gpio.h>
 #include <linux/ioctl.h>
 
-#include <linux/time.h>
-#include <linux/timer.h>
+//#include <linux/time.h>
+//#include <linux/timer.h>
 
 #include "light.h"
 #include "himp.h"
@@ -60,6 +61,8 @@ struct pwm_config_data {
 };
 
 static struct pwm_device *light_pwm;
+
+
 static struct pwm_config_data light_config;
 static int light_open(struct inode *inode,struct file *filp);
 static int light_read(struct file *filp,const char *buf,size_t count,loff_t *f_pos);
@@ -161,7 +164,21 @@ static void light_brightness(unsigned int level)
 int light_open(struct inode *inode,struct file *filp)
 {
 	light_level=0;
-	light_off();
+	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
+	gpio_set_value(S3C2410_GPB(3),1);
+	udelay(10);
+	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(2));
+	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
+	//int ARGS=1000;
+	light_pwm=pwm_request(3,"light");
+	if(light_pwm==NULL)
+	{
+		printk("pwm_request fail\n");
+		return -1;
+	}
+	printk("%c\n",light_pwm->pwm_id);
+	//pwm_disable(light_pwm);
+	//light_off();
 	return 0;
 }
 
@@ -192,19 +209,6 @@ static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 int light_init(void)
 {	
 	register_chrdev(250,"light",&light_fops);
-	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
-	gpio_set_value(S3C2410_GPB(3),1);
-	udelay(10);
-	s3c_gpio_cfgpin(S3C2410_GPG(3),S3C_GPIO_SFN(2));
-	s3c_gpio_setpull(S3C2410_GPB(3),S3C_GPIO_PULL_UP);
-	//int ARGS=1000;
-	light_pwm=pwm_request(3,"light");
-	if(light_pwm==NULL)
-	{
-		printk("pwm_request fail\n");
-		return -1;
-	}
-	//pwm_disable(light_pwm);
 	printk("Insert light module!\n");
 	return 0;
 
@@ -212,10 +216,10 @@ int light_init(void)
 void light_exit(void)
 {
 
-	pwm_free(light_pwm);
-	pwm_disable(light_pwm);
-	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
-	gpio_set_value(S3C2410_GPB(3),1);
+	//pwm_free(light_pwm);
+	//pwm_disable(light_pwm);
+	//s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
+	//gpio_set_value(S3C2410_GPB(3),1);
 	printk("Remove light module!\n");
 	unregister_chrdev(250,"light");
 }

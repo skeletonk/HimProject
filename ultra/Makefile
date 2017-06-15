@@ -4,7 +4,8 @@ obj-m += $(KTARGET).o
 #linux 3.11.0-15-generic
 #KDIR := /lib/modules/$(shell uname -r)/build 
 #kernel-mds2450-3.0.22
-KDIR := /work/kernel-mds2450-3.0.22
+KDIR := /work/kernel
+#KDIR := /work/kernel-mds2450-3.0.22
 CC := arm-none-linux-gnueabi-gcc
 TARGET := sk_app
 NFSDIR := /nfs/rootfs/home
