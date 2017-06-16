@@ -208,6 +208,8 @@ static long light_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 
 int light_init(void)
 {	
+	s3c_gpio_cfgpin(S3C2410_GPB(3),S3C_GPIO_SFN(1));
+	gpio_set_value(S3C2410_GPB(3),1);
 	register_chrdev(250,"light",&light_fops);
 	printk("Insert light module!\n");
 	return 0;

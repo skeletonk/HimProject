@@ -116,8 +116,16 @@ int main ( int argc, char* argv[] ) {
 		}
 		*/
 
-		brightness_receive(&datas,newsockfd,fd_light);
-		//ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		if ((size = read(newsockfd,buff,20+1)) <= 0 ) {
+			puts( "Server: readn error!");
+			exit(1);
+		}
+		printf("%s\n",buff);
+		datas.light_set=atoi(buff);
+
+		//brightness_receive(&datas,newsockfd,fd_light);
+		printf("%u\n",datas.light_set);
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
 		printf("reading newsockfd from Client = %d\n", size);
 		printf("Server: Received String = %s \n", buff);
 		if(strcmp(buff,"end")==0)
@@ -126,12 +134,15 @@ int main ( int argc, char* argv[] ) {
 				break;
 			}
 		//++
-		
+
+		Him_status_send(&datas, newsockfd, fd_ultra, fd_light);
+		printf("%u, %u,%u\n",datas.ultra,datas.light_level,datas.cds);
+	/*	
 		if ( write(newsockfd, "It's so sunny day!", 20+1) < 21 ) {
 			puts( "Server: written error" );
 			exit(1);
 		}
-		
+	*/	
 		
 		//++
 		//-------------------App------------------------//
@@ -178,6 +189,7 @@ void Him_status_send(Him_data *hm,int sock_fd,int fd_ultra, int fd_light)
 	unsigned int sensor_cnt=0;
 	unsigned int value=0;
 	unsigned int temp;
+	char buf[50]={0,};
 	temp=hm->light_set;
 	read(fd_light,hm,sizeof(Him_data));
 	for(i=0;i<15;i++){	
@@ -191,8 +203,12 @@ void Him_status_send(Him_data *hm,int sock_fd,int fd_ultra, int fd_light)
 	}
 	hm->ultra=sum/(sensor_cnt+1);
 	hm->light_set=temp;
+	sprintf(buf,"%u cm, cds : %u, led brightness : %u\n",hm->ultra,hm->cds,hm->light_level);
 	//TODO send.........
-
+	if ( write(sock_fd, buf, 45+1) < 46 ) {
+		puts( "Server: written error" );
+		exit(1);
+	}
 
 }
 void brightness_receive(Him_data *hm, int sock_d, int fd_light)
