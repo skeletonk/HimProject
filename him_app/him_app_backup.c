@@ -10,8 +10,6 @@
 #include <fcntl.h>
 #include <termio.h>
 #include <linux/ioctl.h>
-#include <pthread.h>
-#include <semaphore.h>
 #include "light.h"
 #include "himp.h"
 
@@ -27,21 +25,13 @@
  * 3) cds_send	      	    send the cds sensor information(ON/OFF)
  * 4) ultra_sonic_send      send the ultra sonic sensor value
  */
-struct pt_data{
-	Him_data hm;
-	int fd_light;
-	int fd_ultra;
-	int socksfd;
-};
-pthread_mutex_t mutex =PTHREAD_MUTEX_INITIALIZER;
+
+
 void init_Him_data(Him_data *hm);
 void brightness_receive(Him_data *hm, int sock_d, int fd_light);
 void Him_status_send(Him_data *hm,int sock_fd,int fd_ultra, int fd_light);
-void *threadfunc(struct pt_data *pdata);
-void set_light_value(Him_data *hm,int fd_light,int fd_ultra);
 
 
-Him_data datas;
 int main ( int argc, char* argv[] ) {
     	int sockfd, newsockfd, clilen;
     	struct sockaddr_in  cli_addr;
@@ -57,8 +47,8 @@ int main ( int argc, char* argv[] ) {
 	int fd_light,fd_ultra;
 	int retn;
 	unsigned int i,j;
-	struct pt_data pt_data;
-	pthread_t thread_t;
+	Him_data datas;
+
 
 
 
@@ -117,93 +107,78 @@ int main ( int argc, char* argv[] ) {
         	newsockfd = accept(sockfd,(struct sockaddr*) &cli_addr, &clilen);
 	        if ( newsockfd < 0 ) {
 			puts("Server: accept error!");
-			//exit(1);
-			break;
+			exit(1);
 		}
-
-		pt_data.hm=datas;
-		pt_data.fd_light=fd_light;
-		pt_data.fd_ultra=fd_ultra;
-		pt_data.socksfd=newsockfd;
-
-		if((pthread_create(&thread_t,0,(void*)threadfunc,&pt_data))<0)
-		{
-			puts("thread create error:\n");
-			exit(0);
+   		while(1){/* 
+		if ((size = read(newsockfd,&datas.light_set,sizeof(datas.light_set))) <= 0 ) {
+			puts( "Server: readn error!");
+			exit(1);
 		}
-		while(1){
+		*/
 
+		if ((size = read(newsockfd,buff,20+1)) <= 0 ) {
+			puts( "Server: readn error!");
+			exit(1);
+		}
+		printf("%s\n",buff);
+		datas.light_set=atoi(buff);
 
-			int temp;
-			if ((size = read(newsockfd,buff,20+1)) <= 0 ) {
-				puts( "Server: readn error!");
-				exit(1);
-			}
-			printf("%s\n",buff);
-				
-			printf("reading newsockfd from Client = %d\n", size);
-			printf("Server: Received String = %s \n", buff);
-			if(strcmp(buff,"end")==0)
+		//brightness_receive(&datas,newsockfd,fd_light);
+		printf("%u\n",datas.light_set);
+		ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+		printf("reading newsockfd from Client = %d\n", size);
+		printf("Server: Received String = %s \n", buff);
+		if(strcmp(buff,"end")==0)
 			{
 				printf("end of sock %d\n",newsockfd);
 				break;
 			}
-			temp=atoi(buff);
-			printf("%u\n",temp);
+		//++
 
-		//for(i=0;i<15;i++){	
-		//	for(j=0;j<1000000;j++);
-		//	read(fd_ultra,&datas.ultra,sizeof(datas.ultra));
-		//	if(datas.ultra>10&&datas.ultra<200)
-		//	{
-		//		sum=sum+(datas.ultra);
-		//		sensor_cnt++;
-		//	}	
-		//}
-
-		//datas.ultra=sum/(sensor_cnt+1);
-		datas.light_set=temp;
-
-		
+		Him_status_send(&datas, newsockfd, fd_ultra, fd_light);
+		printf("%u, %u,%u\n",datas.ultra,datas.light_level,datas.cds);
+	/*	
+		if ( write(newsockfd, "It's so sunny day!", 20+1) < 21 ) {
+			puts( "Server: written error" );
+			exit(1);
 		}
+	*/	
+		
+		//++
+		//-------------------App------------------------//
+		/*
+		while(1){
+			Him_status_send(&datas,newsockfd,fd_ultra,fd_light);
+			printf("status\n");
+			printf("cds status : %u\n",datas.cds);
+			printf("light_level : %u\n",datas.light_level);
+			printf("ultra sonic sensor state : %u cm\n",datas.ultra);
 
+			brightness_receive(&datas,newsockfd,fd_light);
+			if(datas.light_set>100||datas.light_set<21) datas.light_set = 100;
+			else datas.light_set-=20;
+		
+			if(datas.ultra<130&&datas.ultra>15) 
+				ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
+			else 
+				ioctl(fd_light,DEV_LIGHT_LEVEL,0);
 
+			getchar();
+		}
+		getchar();
+		close(fd_light);
+		close(fd_ultra);
+		printf("light close..\n");
+		printf("ultra close..\n");
+		*/
+		}
+		close( newsockfd );
 	}
-	pthread_join(thread_t,0);
-	close(fd_light);
-	close(fd_ultra);
-	printf("light close..\n");
-	printf("ultra close..\n");
     	close( sockfd );
 
     	return 0;
 }
-void *threadfunc(struct pt_data *pdata)
-{
-	int newsockfd;
-	int size,i;
-	char buff[30]={0,};
-	newsockfd=*(int*)&pdata->socksfd;
 
-	  	while(1){
-			for(i=0;i<1000000;i++);
-		Him_status_send(&pdata->hm, newsockfd, pdata->fd_ultra, pdata->fd_light);
-		printf("%u, %u,%u\n",pdata->hm.ultra, pdata->hm.light_level,pdata->hm.cds);
-
-		if(datas.light_set>100) datas.light_set=99;
-		if(datas.light_set<0) datas.light_set=0;	
-
-		printf("datas.ultra %u\n",datas.ultra);
-		printf("datas.light_level %u\n",datas.light_level);
-		printf("datas.cds %u\n",datas.cds);
-		printf("datas.light_set %u\n",datas.light_set);
-
-		set_light_value(&datas,pdata->fd_light,pdata->fd_ultra);
-
-	}
-	printf("close newsockfd\n");
-	close( newsockfd );
-}
 	
 	/* ------------- application area --------------------*/
 
@@ -260,13 +235,7 @@ void brightness_receive(Him_data *hm, int sock_d, int fd_light)
 	hm->cds=temp.cds;
 	hm->ultra=temp.ultra;
 }
-void set_light_value(Him_data *hm,int fd_light,int fd_ultra)
-{
-	pthread_mutex_lock(&mutex);
-	if(datas.ultra>110) datas.light_set = 1;
-	ioctl(fd_light,DEV_LIGHT_LEVEL,&datas.light_set);
-	pthread_mutex_unlock(&mutex);
-}
+
 void init_Him_data(Him_data *him)
 {
 	him->light_level = 0;
